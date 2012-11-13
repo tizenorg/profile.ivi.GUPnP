@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT([gupnp],
-        [0.18.0],
+        [0.19.1],
         [http://bugzilla.gnome.org/enter_bug.cgi?product=gupnp&component=gupnp],
         [gupnp],
         [http://www.gupnp.org/])
@@ -50,7 +50,7 @@ esac
 PKG_CHECK_MODULES(LIBGUPNP, glib-2.0 >= 2.24.0 \
                             gio-2.0 \
                             gmodule-2.0 \
-                            gssdp-1.0 >= 0.11.2 \
+                            gssdp-1.0 >= 0.13.0 \
                             libsoup-2.4 >= 2.28.2 \
                             libxml-2.0 \
                             $UUID)
@@ -129,6 +129,14 @@ fi
 
 GOBJECT_INTROSPECTION_CHECK([0.6.4])
 
+# vapigen
+AS_IF([test "x$found_introspection" = "xyes"],
+      [
+       VALA_PROG_VAPIGEN([0.14])
+      ]
+)
+AM_CONDITIONAL([HAVE_VAPIGEN], [test "x$VAPIGEN" != "x"])
+
 # Gtk-doc
 GTK_DOC_CHECK([1.0])
 
@@ -141,6 +149,7 @@ tests/Makefile
 tests/gtest/Makefile
 doc/Makefile
 doc/version.xml
+vala/Makefile
 gupnp-1.0.pc
 gupnp-1.0-uninstalled.pc
 ])
