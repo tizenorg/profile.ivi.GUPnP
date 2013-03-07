@@ -30,7 +30,6 @@
 #include <gobject/gvaluecollector.h>
 #include <gmodule.h>
 #include <libsoup/soup-date.h>
-#include <uuid/uuid.h>
 #include <string.h>
 #include "gupnp-service.h"
 #include "gupnp-root-device.h"
@@ -41,6 +40,12 @@
 #include "gena-protocol.h"
 #include "xml-util.h"
 #include "gvalue-util.h"
+
+#ifdef G_OS_WIN32
+#include <rpc.h>
+#else
+#include <uuid/uuid.h>
+#endif
 
 #define SUBSCRIPTION_TIMEOUT 300 /* DLNA (7.2.22.1) enforced */
 
@@ -1077,6 +1082,22 @@ subscription_response (GUPnPService *service,
 static char *
 generate_sid (void)
 {
+#ifdef G_OS_WIN32
+        char *ret = NULL;
+        UUID uuid;
+        RPC_STATUS stat;
+        stat = UuidCreate (&uuid);
+        if (stat == RPC_S_OK) {
+                unsigned char* uuidStr = NULL;
+                stat = UuidToString (&uuid, &uuidStr);
+                if (stat == RPC_S_OK) {
+                        ret = g_strdup_printf ("uuid:%s", uuidStr);
+                        RpcStringFree (&uuidStr);
+                }
+        }
+
+        return ret;
+#else
         uuid_t id;
         char out[39];
 
@@ -1084,6 +1105,7 @@ generate_sid (void)
         uuid_unparse (id, out);
 
         return g_strdup_printf ("uuid:%s", out);
+#endif
 }
 
 /* Subscription expired */
@@ -1646,7 +1668,7 @@ gupnp_service_class_init (GUPnPServiceClass *klass)
         /**
          * GUPnPService::action-invoked:
          * @service: The #GUPnPService that received the signal
-         * @action: The invoked #GUPnPAction
+         * @action: The invoked #GUPnPServiceAction
          *
          * Emitted whenever an action is invoked. Handler should process
          * @action and must call either gupnp_service_action_return() or
@@ -1911,6 +1933,8 @@ notify_subscriber (gpointer key,
 
         /* Queue */
         data->pending_messages = g_list_prepend (data->pending_messages, msg);
+        soup_message_headers_append (msg->request_headers,
+                                     "Connection", "close");
 
         session = gupnp_service_get_session (data->service);
 
@@ -2168,7 +2192,7 @@ connect_names_to_signal_handlers (GUPnPService *service,
  * #GUPnPService::action-invoked and #GUPnPService::query-variable signals to
  * appropriate callbacks for the service @service. It uses service introspection
  * and GModule's introspective features. It is very simillar to
- * glade_xml_signal_autoconnect() except that it attempts to guess the names of
+ * gtk_builder_connect_signals() except that it attempts to guess the names of
  * the signal handlers on its own.
  *
  * For this function to do its magic, the application must name the callback

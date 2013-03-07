@@ -1,3 +1,80 @@
+0.20.1
+======
+
+Changes since 0.20.0:
+- Fix suspicious use of va_list in the code.
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=689813
+
+All contributors to this release:
+  Krzesimir Nowak <krnowak@openismus.com>
+
+0.20.0
+======
+
+Changes since 0.19.4:
+- Fix Accept-Language header generation.
+- Fix some issues with Windows support on mingw64.
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=683199
+
+All contributors to this release:
+  Jens Georg <mail@jensge.org>
+
+0.19.4
+======
+
+Changes since 0.19.3:
+- Shuffle around some test data.
+- Fix a GError leak in the linux cm.
+- Fix a leak in variable notification.
+- Clarify usage of gupnp_service_proxy_remove_notify.
+
+All contributors to this release:
+  Jens Georg <mail@jensge.org>
+  Sven Neumann <s.neumann@raumfeld.com>
+  Marcin Nowakowski <marcin.nowakowski@pure.com>
+
+0.19.3
+======
+
+Changes since 0.19.2:
+- Work-around missing notification messages.
+
+All contributors to this release:
+  Jens Georg <mail@jensge.org>
+
+0.19.2
+======
+
+Changes since 0.19.1:
+
+- Support Windows.
+- Fix searching for services in ControlPoint.
+- Drop deprecated calls to g_type_init on glib >= 2.35.
+- Fix LD_LIBRARY_PATH in make check.
+- Explicitly use IPv4 in tests.
+- Allow autogen.sh to be run out-of-tree.
+- Expose GSSDPResourceGroup of a root device.
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=687320
+ - https://bugzilla.gnome.org/show_bug.cgi?id=687621
+ - https://bugzilla.gnome.org/show_bug.cgi?id=689028
+ - https://bugzilla.gnome.org/show_bug.cgi?id=688411
+ - https://bugzilla.gnome.org/show_bug.cgi?id=685643
+ - https://bugzilla.gnome.org/show_bug.cgi?id=682580
+ - https://bugzilla.gnome.org/show_bug.cgi?id=672830
+
+All contributors to this release:
+  Jens Georg <mail@jensge.org>
+  Theppitak Karoonboonyanan <thep@linux.thai.net>
+  Stef Walter <stefw@gnome.org>
+  Juan A. Suarez Romero <jasuarez@igalia.com>
+  Alban Browaeys <prahal@yahoo.com>
+
 0.19.1
 ======
 Changes since 0.19.0:

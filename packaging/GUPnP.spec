@@ -7,12 +7,12 @@
 
 Name:       gupnp
 Summary:    GUPnP is an framework for creating UPnP devices & control points
-Version:    0.19.1
+Version:    0.20.1
 Release:    1
 Group:      System/Libraries
 License:    LGPLv2+
 URL:        http://www.gupnp.org/
-Source0:    http://download.gnome.org/sources/%{name}/0.19/%{name}-%{version}.tar.bz2
+Source0:    http://download.gnome.org/sources/%{name}/0.20/%{name}-%{version}.tar.bz2
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(glib-2.0)
