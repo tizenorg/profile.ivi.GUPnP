@@ -7,7 +7,7 @@
 
 Name:       gupnp
 Summary:    GUPnP is an framework for creating UPnP devices & control points
-Version:    0.20.1
+Version:    0.20.3
 Release:    1
 Group:      System/Libraries
 License:    LGPLv2+

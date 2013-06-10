@@ -73,6 +73,14 @@ GUPnPContextManager
 @Returns: 
 
 
+<!-- ##### FUNCTION gupnp_context_manager_rescan_control_points ##### -->
+<para>
+
+</para>
+
+@manager: 
+
+
 <!-- ##### FUNCTION gupnp_context_manager_manage_control_point ##### -->
 <para>
 
