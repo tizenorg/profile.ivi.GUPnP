@@ -1,3 +1,6 @@
+* Tue Jun 11 2013 Regis Merlino <regis.merlino@intel.com>
+- Update gupnp to 0.20.3 (161969f)
+
 * Thu Apr 04 2013 Regis Merlino <regis.merlino@intel.com>
 - Fix browsing of WMP DMS running on Windows 7
 
