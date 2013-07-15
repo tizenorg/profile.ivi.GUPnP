@@ -1,3 +1,6 @@
+* Mon Jul 15 23:58:41 UTC 2013 - tracy.graydon@intel.com
+- Stripped out the old yaml cruft from spec file 
+
 * Thu Apr 04 2013 Regis Merlino <regis.merlino@intel.com>
 - Fix browsing of WMP DMS running on Windows 7
 
