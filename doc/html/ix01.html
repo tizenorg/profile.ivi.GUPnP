@@ -20,7 +20,7 @@
 </tr></table>
 <div class="index">
 <div class="titlepage"><div><div><h2 class="title">
-<a name="idp38112"></a>Index</h2></div></div></div>
+<a name="idp53232"></a>Index</h2></div></div></div>
 <div class="index"><div class="indexdiv">
 <h3>G</h3>
 <dl>
@@ -45,6 +45,8 @@
 <dt>GUPnPContextManager:main-context, <a class="indexterm" href="GUPnPContextManager.html#GUPnPContextManager--main-context">The "main-context" property</a>
 </dt>
 <dt>GUPnPContextManager:port, <a class="indexterm" href="GUPnPContextManager.html#GUPnPContextManager--port">The "port" property</a>
+</dt>
+<dt>GUPnPContextManager:white-list, <a class="indexterm" href="GUPnPContextManager.html#GUPnPContextManager--white-list">The "white-list" property</a>
 </dt>
 <dt>GUPnPControlError, <a class="indexterm" href="gupnp-Error-codes.html#GUPnPControlError">enum GUPnPControlError</a>
 </dt>
@@ -154,6 +156,8 @@
 </dt>
 <dt>GUPnPServiceStateVariableInfo, <a class="indexterm" href="gupnp-gupnp-service-introspection.html#GUPnPServiceStateVariableInfo">GUPnPServiceStateVariableInfo</a>
 </dt>
+<dt>GUPnPWhiteList, <a class="indexterm" href="GUPnPWhiteList.html#GUPnPWhiteList-struct">struct GUPnPWhiteList</a>
+</dt>
 <dt>GUPnPXMLDoc, <a class="indexterm" href="GUPnPXMLDoc.html#GUPnPXMLDoc-struct">struct GUPnPXMLDoc</a>
 </dt>
 <dt>GUPnPXMLError, <a class="indexterm" href="gupnp-Error-codes.html#GUPnPXMLError">enum GUPnPXMLError</a>
@@ -177,6 +181,8 @@
 <dt>gupnp_context_manager_create, <a class="indexterm" href="GUPnPContextManager.html#gupnp-context-manager-create">gupnp_context_manager_create ()</a>
 </dt>
 <dt>gupnp_context_manager_get_port, <a class="indexterm" href="GUPnPContextManager.html#gupnp-context-manager-get-port">gupnp_context_manager_get_port ()</a>
+</dt>
+<dt>gupnp_context_manager_get_white_list, <a class="indexterm" href="GUPnPContextManager.html#gupnp-context-manager-get-white-list">gupnp_context_manager_get_white_list ()</a>
 </dt>
 <dt>gupnp_context_manager_manage_control_point, <a class="indexterm" href="GUPnPContextManager.html#gupnp-context-manager-manage-control-point">gupnp_context_manager_manage_control_point ()</a>
 </dt>
@@ -253,6 +259,8 @@
 <dt>gupnp_device_info_list_device_types, <a class="indexterm" href="GUPnPDeviceInfo.html#gupnp-device-info-list-device-types">gupnp_device_info_list_device_types ()</a>
 </dt>
 <dt>gupnp_device_info_list_dlna_capabilities, <a class="indexterm" href="GUPnPDeviceInfo.html#gupnp-device-info-list-dlna-capabilities">gupnp_device_info_list_dlna_capabilities ()</a>
+</dt>
+<dt>gupnp_device_info_list_dlna_device_class_identifier, <a class="indexterm" href="GUPnPDeviceInfo.html#gupnp-device-info-list-dlna-device-class-identifier">gupnp_device_info_list_dlna_device_class_identifier ()</a>
 </dt>
 <dt>gupnp_device_info_list_services, <a class="indexterm" href="GUPnPDeviceInfo.html#gupnp-device-info-list-services">gupnp_device_info_list_services ()</a>
 </dt>
@@ -417,6 +425,24 @@
 <dt>GUPNP_TYPE_URI, <a class="indexterm" href="gupnp-Special-UPnP-types.html#GUPNP-TYPE-URI:CAPS">GUPNP_TYPE_URI</a>
 </dt>
 <dt>GUPNP_TYPE_UUID, <a class="indexterm" href="gupnp-Special-UPnP-types.html#GUPNP-TYPE-UUID:CAPS">GUPNP_TYPE_UUID</a>
+</dt>
+<dt>gupnp_white_list_add_entry, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-add-entry">gupnp_white_list_add_entry ()</a>
+</dt>
+<dt>gupnp_white_list_check_context, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-check-context">gupnp_white_list_check_context ()</a>
+</dt>
+<dt>gupnp_white_list_clear, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-clear">gupnp_white_list_clear ()</a>
+</dt>
+<dt>gupnp_white_list_get_enabled, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-get-enabled">gupnp_white_list_get_enabled ()</a>
+</dt>
+<dt>gupnp_white_list_get_entries, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-get-entries">gupnp_white_list_get_entries ()</a>
+</dt>
+<dt>gupnp_white_list_is_empty, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-is-empty">gupnp_white_list_is_empty ()</a>
+</dt>
+<dt>gupnp_white_list_new, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-new">gupnp_white_list_new ()</a>
+</dt>
+<dt>gupnp_white_list_remove_entry, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-remove-entry">gupnp_white_list_remove_entry ()</a>
+</dt>
+<dt>gupnp_white_list_set_enabled, <a class="indexterm" href="GUPnPWhiteList.html#gupnp-white-list-set-enabled">gupnp_white_list_set_enabled ()</a>
 </dt>
 <dt>gupnp_xml_doc_new, <a class="indexterm" href="GUPnPXMLDoc.html#gupnp-xml-doc-new">gupnp_xml_doc_new ()</a>
 </dt>

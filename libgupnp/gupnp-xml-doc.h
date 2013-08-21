@@ -28,6 +28,8 @@
 #include <libxml/tree.h>
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 GType
 gupnp_xml_doc_get_type (void) G_GNUC_CONST;
 
@@ -55,6 +57,12 @@ gupnp_xml_doc_get_type (void) G_GNUC_CONST;
 typedef struct _GUPnPXMLDoc GUPnPXMLDoc;
 typedef struct _GUPnPXMLDocClass GUPnPXMLDocClass;
 
+/**
+ * GUPnPXMLDoc:
+ * @doc: Pointer to the document.
+ *
+ * Reference-counting wrapper for libxml's #xmlDoc
+ */
 struct _GUPnPXMLDoc {
         GObject parent;
         /*< public >*/
@@ -71,5 +79,7 @@ gupnp_xml_doc_new                       (xmlDoc         *xml_doc);
 GUPnPXMLDoc *
 gupnp_xml_doc_new_from_path             (const char     *path,
                                          GError        **error);
+
+G_END_DECLS
 
 #endif /* __GUPNP_XML_DOC_H__ */

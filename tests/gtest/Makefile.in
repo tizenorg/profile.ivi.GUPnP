@@ -51,8 +51,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@HAVE_GTEST_TRUE@check_PROGRAMS = test-context$(EXEEXT) \
-@HAVE_GTEST_TRUE@	test-bugs$(EXEEXT)
+check_PROGRAMS = test-context$(EXEEXT) test-bugs$(EXEEXT)
 subdir = tests/gtest
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -67,8 +66,7 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__test_bugs_SOURCES_DIST = test-bugs.c
-@HAVE_GTEST_TRUE@am_test_bugs_OBJECTS = test-bugs.$(OBJEXT)
+am_test_bugs_OBJECTS = test-bugs.$(OBJEXT)
 test_bugs_OBJECTS = $(am_test_bugs_OBJECTS)
 test_bugs_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
@@ -77,8 +75,7 @@ test_bugs_DEPENDENCIES = $(top_builddir)/libgupnp/libgupnp-1.0.la \
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
-am__test_context_SOURCES_DIST = test-context.c
-@HAVE_GTEST_TRUE@am_test_context_OBJECTS = test-context.$(OBJEXT)
+am_test_context_OBJECTS = test-context.$(OBJEXT)
 test_context_OBJECTS = $(am_test_context_OBJECTS)
 test_context_LDADD = $(LDADD)
 test_context_DEPENDENCIES = $(top_builddir)/libgupnp/libgupnp-1.0.la \
@@ -110,8 +107,7 @@ AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(test_bugs_SOURCES) $(test_context_SOURCES)
-DIST_SOURCES = $(am__test_bugs_SOURCES_DIST) \
-	$(am__test_context_SOURCES_DIST)
+DIST_SOURCES = $(test_bugs_SOURCES) $(test_context_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -160,8 +156,6 @@ GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
 GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
-GTest_CFLAGS = @GTest_CFLAGS@
-GTest_LIBS = @GTest_LIBS@
 HAVE_NETLINK = @HAVE_NETLINK@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
@@ -272,12 +266,12 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@HAVE_GTEST_TRUE@TESTS_ENVIRONMENT = G_SLICE=debug-blocks \
-@HAVE_GTEST_TRUE@		    LD_LIBRARY_PATH=$(top_builddir)/libgupnp/.libs:$(LD_LIBRARY_PATH)
+TESTS_ENVIRONMENT = G_SLICE=debug-blocks \
+		    LD_LIBRARY_PATH=$(top_builddir)/libgupnp/.libs:$(LD_LIBRARY_PATH)
 
-@HAVE_GTEST_TRUE@TESTS = $(check_PROGRAMS)
-@HAVE_GTEST_TRUE@test_context_SOURCES = test-context.c
-@HAVE_GTEST_TRUE@test_bugs_SOURCES = test-bugs.c
+TESTS = $(check_PROGRAMS)
+test_context_SOURCES = test-context.c
+test_bugs_SOURCES = test-bugs.c
 LDADD = \
 	$(top_builddir)/libgupnp/libgupnp-1.0.la \
 	$(LIBGUPNP_LIBS)

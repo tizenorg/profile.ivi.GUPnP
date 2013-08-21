@@ -1,3 +1,6 @@
+* Wed Aug 21 2013 Regis Merlino <regis.merlino@intel.com>
+- Update gupnp to 0.20.5 (fdeb6f9f)
+
 * Tue Jul 16 00:01:36 UTC 2013 - tracy.graydon@intel.com
 - Stripped old yaml cruft out of spec file 
 
