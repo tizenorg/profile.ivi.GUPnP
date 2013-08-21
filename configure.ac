@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT([gupnp],
-        [0.20.3],
+        [0.20.5],
         [http://bugzilla.gnome.org/enter_bug.cgi?product=gupnp&component=gupnp],
         [gupnp],
         [http://www.gupnp.org/])
@@ -27,9 +27,6 @@ AC_SYS_LARGEFILE
 LT_PREREQ([2.2])
 LT_INIT
 
-
-PKG_CHECK_MODULES(GTest, glib-2.0 >= 2.16, [gtest=yes], [gtest=no])
-AM_CONDITIONAL(HAVE_GTEST, [test x$gtest = xyes])
 
 AC_MSG_CHECKING([operating system])
 os_win32=no
@@ -156,7 +153,7 @@ AS_IF([test "x$VAPIGEN" != "x"], [have_vapigen=yes])
 AM_CONDITIONAL([HAVE_VAPIGEN], [test "x$VAPIGEN" != "x"])
 
 # Gtk-doc
-GTK_DOC_CHECK([1.0])
+GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
 
 AC_CONFIG_FILES([
 Makefile

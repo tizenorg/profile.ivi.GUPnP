@@ -53,7 +53,8 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 noinst_PROGRAMS = test-browsing$(EXEEXT) test-proxy$(EXEEXT) \
-	test-server$(EXEEXT) test-introspection$(EXEEXT)
+	test-server$(EXEEXT) test-introspection$(EXEEXT) \
+	test-white-list$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -93,6 +94,11 @@ test_server_DEPENDENCIES = $(top_builddir)/libgupnp/libgupnp-1.0.la \
 test_server_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(test_server_LDFLAGS) $(LDFLAGS) -o $@
+am_test_white_list_OBJECTS = test-white-list.$(OBJEXT)
+test_white_list_OBJECTS = $(am_test_white_list_OBJECTS)
+test_white_list_DEPENDENCIES =  \
+	$(top_builddir)/libgupnp/libgupnp-1.0.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__depfiles_maybe = depfiles
@@ -120,9 +126,11 @@ AM_V_GEN = $(am__v_GEN_@AM_V@)
 am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(test_browsing_SOURCES) $(test_introspection_SOURCES) \
-	$(test_proxy_SOURCES) $(test_server_SOURCES)
+	$(test_proxy_SOURCES) $(test_server_SOURCES) \
+	$(test_white_list_SOURCES)
 DIST_SOURCES = $(test_browsing_SOURCES) $(test_introspection_SOURCES) \
-	$(test_proxy_SOURCES) $(test_server_SOURCES)
+	$(test_proxy_SOURCES) $(test_server_SOURCES) \
+	$(test_white_list_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -207,8 +215,6 @@ GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
 GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
-GTest_CFLAGS = @GTest_CFLAGS@
-GTest_LIBS = @GTest_LIBS@
 HAVE_NETLINK = @HAVE_NETLINK@
 HTML_DIR = @HTML_DIR@
 INSTALL = @INSTALL@
@@ -342,6 +348,11 @@ test_server_LDADD = $(top_builddir)/libgupnp/libgupnp-1.0.la \
 		      $(LIBGUPNP_LIBS)
 
 test_server_LDFLAGS = -export-dynamic
+test_white_list_SOURCES = test-white-list.c
+test_white_list_LDADD = $(top_builddir)/libgupnp/libgupnp-1.0.la \
+			  $(GTHREAD_LIBS) \
+			  $(LIBGUPNP_LIBS)
+
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(BUILT_SOURCES)
 MAINTAINERCLEANFILES = Makefile.in $(BUILT_SOURCES)
@@ -400,6 +411,9 @@ test-proxy$(EXEEXT): $(test_proxy_OBJECTS) $(test_proxy_DEPENDENCIES) $(EXTRA_te
 test-server$(EXEEXT): $(test_server_OBJECTS) $(test_server_DEPENDENCIES) $(EXTRA_test_server_DEPENDENCIES) 
 	@rm -f test-server$(EXEEXT)
 	$(AM_V_CCLD)$(test_server_LINK) $(test_server_OBJECTS) $(test_server_LDADD) $(LIBS)
+test-white-list$(EXEEXT): $(test_white_list_OBJECTS) $(test_white_list_DEPENDENCIES) $(EXTRA_test_white_list_DEPENDENCIES) 
+	@rm -f test-white-list$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_white_list_OBJECTS) $(test_white_list_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -411,6 +425,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-introspection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-proxy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-white-list.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

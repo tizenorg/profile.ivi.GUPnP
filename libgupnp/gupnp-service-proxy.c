@@ -281,14 +281,14 @@ gupnp_service_proxy_dispose (GObject *object)
                 g_source_destroy (proxy->priv->notify_idle_src);
                 proxy->priv->notify_idle_src = NULL;
         }
-        
+
         while (proxy->priv->pending_notifies) {
                 emit_notify_data_free (proxy->priv->pending_notifies->data);
                 proxy->priv->pending_notifies =
                         g_list_delete_link (proxy->priv->pending_notifies,
                                             proxy->priv->pending_notifies);
         }
-        
+
         /* Call super */
         object_class = G_OBJECT_CLASS (gupnp_service_proxy_parent_class);
         object_class->dispose (object);
@@ -371,7 +371,7 @@ gupnp_service_proxy_class_init (GUPnPServiceProxyClass *klass)
  * @proxy: A #GUPnPServiceProxy
  * @action: An action
  * @error: The location where to store any error, or %NULL
- * @Varargs: tuples of in parameter name, in parameter type, and in parameter
+ * @...: tuples of in parameter name, in parameter type, and in parameter
  * value, followed by %NULL, and then tuples of out parameter name,
  * out parameter type, and out parameter value location, terminated with %NULL
  *
@@ -575,17 +575,36 @@ gupnp_service_proxy_send_action_valist (GUPnPServiceProxy *proxy,
         VAR_ARGS_TO_OUT_HASH_TABLE (var_args, out_hash);
 
         local_error = NULL;
-        result = gupnp_service_proxy_send_action_hash (proxy,
-                                                       action,
-                                                       &local_error,
-                                                       in_hash,
-                                                       out_hash);
+        handle = gupnp_service_proxy_begin_action_list (proxy,
+                                                        action,
+                                                        in_names,
+                                                        in_values,
+                                                        stop_main_loop,
+                                                        main_loop);
+        if (!handle) {
+                g_main_loop_unref (main_loop);
+                result = FALSE;
+
+                goto out;
+        }
+
+        /* Loop till we get a reply (or time out) */
+        if (g_main_loop_is_running (main_loop))
+                g_main_loop_run (main_loop);
+
+        g_main_loop_unref (main_loop);
+
+        result = gupnp_service_proxy_end_action_hash (proxy,
+                                                      handle,
+                                                      &local_error,
+                                                      out_hash);
 
         if (local_error == NULL) {
                 OUT_HASH_TABLE_TO_VAR_ARGS (out_hash, var_args_copy);
         } else {
                 g_propagate_error (error, local_error);
         }
+out:
         va_end (var_args_copy);
         g_hash_table_unref (in_hash);
         g_hash_table_unref (out_hash);
@@ -726,7 +745,7 @@ gupnp_service_proxy_send_action_list (GUPnPServiceProxy *proxy,
  * @callback: (scope async): The callback to call when sending the action has succeeded
  * or failed
  * @user_data: User data for @callback
- * @Varargs: tuples of in parameter name, in parameter type, and in parameter
+ * @...: tuples of in parameter name, in parameter type, and in parameter
  * value, terminated with %NULL
  *
  * Sends action @action with parameters @Varargs to the service exposed by
@@ -1112,7 +1131,7 @@ gupnp_service_proxy_begin_action_hash
  * @proxy: A #GUPnPServiceProxy
  * @action: A #GUPnPServiceProxyAction handle
  * @error: The location where to store any error, or %NULL
- * @Varargs: tuples of out parameter name, out parameter type, and out parameter
+ * @...: tuples of out parameter name, out parameter type, and out parameter
  * value location, terminated with %NULL. The out parameter values should be
  * freed after use
  *
@@ -1361,7 +1380,7 @@ gupnp_service_proxy_end_action_valist (GUPnPServiceProxy       *proxy,
  * in @out_values must be freed using #g_list_free and each element in it using
  * #g_value_unset and #g_slice_free.
  *
- * Return value : %TRUE on success.
+ * Returns: %TRUE on success.
  **/
 gboolean
 gupnp_service_proxy_end_action_list (GUPnPServiceProxy       *proxy,
@@ -1903,7 +1922,7 @@ server_handler (G_GNUC_UNUSED SoupServer        *soup_server,
 
                 g_source_unref (proxy->priv->notify_idle_src);
         }
-        
+
         /* Everything went OK */
         soup_message_set_status (msg, SOUP_STATUS_OK);
 }
