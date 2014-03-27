@@ -15,6 +15,8 @@ BuildRequires:  pkgconfig(gssdp-1.0)
 BuildRequires:  pkgconfig(libsoup-2.4)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  pkgconfig(uuid)
+BuildRequires:  gobject-introspection-devel
+BuildRequires:  vala
 
 
 %description
@@ -57,3 +59,7 @@ rm -rf  $RPM_BUILD_ROOT%{_datadir}/gtk-doc
 %{_libdir}/*.so
 %{_includedir}/gupnp-1.0
 %{_bindir}/gupnp-binding-tool
+%{_libdir}/girepository-1.0/GUPnP-1.0.typelib
+%{_datadir}/gir-1.0/GUPnP-1.0.gir
+%{_datadir}/vala/vapi/gupnp-1.0.deps
+%{_datadir}/vala/vapi/gupnp-1.0.vapi
