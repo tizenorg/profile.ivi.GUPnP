@@ -1,12 +1,12 @@
 Name:       gupnp
 Summary:    GUPnP is an framework for creating UPnP devices & control points
-Version:    0.20.5
-Release:    1
+Version:    0.20.12
+Release:    0
 Group:      System/Libraries
-License:    LGPLv2+
+License:    LGPL-2.0+
 URL:        http://www.gupnp.org/
-Source0:    http://download.gnome.org/sources/%{name}/0.20/%{name}-%{version}.tar.bz2
-Requires(post): /sbin/ldconfig
+Source0:    http://download.gnome.org/sources/%{name}/0.20/%{name}-%{version}.tar.xz
+Requires(post):   /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gio-2.0)
@@ -26,7 +26,7 @@ The GUPnP API is intended to be easy to use, efficient and flexible.
 
 %package devel
 Summary:    Development package for gupnp
-Group:      Development/Libraries
+Group:      System/Libraries
 Requires:   %{name} = %{version}-%{release}
 
 %description devel
@@ -37,13 +37,13 @@ Files for development with gupnp.
 
 %build
 %configure --disable-static
-make %{?jobs:-j%jobs}
+%__make %{?jobs:-j%jobs}
 
 %install
 rm -rf %{buildroot}
 %make_install
 
-rm -rf  $RPM_BUILD_ROOT%{_datadir}/gtk-doc
+rm -rf  %{buildroot}%{_datadir}/gtk-doc
 
 %post -p /sbin/ldconfig
 
