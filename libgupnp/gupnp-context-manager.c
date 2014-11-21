@@ -25,12 +25,13 @@
 
 /**
  * SECTION:gupnp-context-manager
- * @short_description: Manages #GUPnPContext objects.
+ * @short_description: Manages GUPnPContext objects.
  *
  * A Utility class that takes care of creation and destruction of
  * #GUPnPContext objects for all available network interfaces as they go up
  * (connect) and down (disconnect), respectively.
  *
+ * Since: 0.13.0
  */
 
 #include <config.h>
@@ -45,7 +46,17 @@
 #include "gupnp.h"
 #include "gupnp-marshal.h"
 
+#ifdef HAVE_IFADDRS_H
 #include "gupnp-unix-context-manager.h"
+#endif
+
+#ifdef G_OS_WIN32
+#include "gupnp-windows-context-manager.h"
+#elif defined(USE_NETWORK_MANAGER)
+#include "gupnp-network-manager.h"
+#elif defined(USE_CONNMAN)
+#include "gupnp-connman-manager.h"
+#endif
 
 G_DEFINE_ABSTRACT_TYPE (GUPnPContextManager,
                         gupnp_context_manager,
@@ -169,20 +180,19 @@ gupnp_context_manager_filter_context (GUPnPWhiteList *white_list,
         GList *obj;
         GList *blk;
         gboolean match;
-        GUPnPContext *context;
-        GSSDPResourceBrowser *browser;
 
         obj = manager->priv->objects;
         blk = manager->priv->blacklisted;
 
         while (obj != NULL) {
-                if (!GUPNP_IS_CONTROL_POINT (obj->data))
-                        continue;
-
                 /* If the white list is empty, treat it as disabled */
                 if (check) {
-                        /* Filter out context */
-                        context = gupnp_control_point_get_context (obj->data);
+                        GUPnPContext *context;
+
+                        g_object_get (G_OBJECT (obj->data),
+                                      "context", &context,
+                                      NULL);
+
                         match = gupnp_white_list_check_context (white_list,
                                                                 context);
                 } else {
@@ -190,11 +200,18 @@ gupnp_context_manager_filter_context (GUPnPWhiteList *white_list,
                         match = TRUE;
                 }
 
-                browser = GSSDP_RESOURCE_BROWSER (obj->data);
-                gssdp_resource_browser_set_active (browser, match);
+                if (GUPNP_IS_CONTROL_POINT (obj->data)) {
+                        GSSDPResourceBrowser *browser;
 
-                if (match)
-                        (void) gssdp_resource_browser_rescan (browser);
+                        browser = GSSDP_RESOURCE_BROWSER (obj->data);
+                        gssdp_resource_browser_set_active (browser, match);
+                } else if (GUPNP_IS_ROOT_DEVICE (obj->data)) {
+                        GSSDPResourceGroup *group;
+
+                        group = GSSDP_RESOURCE_GROUP (obj->data);
+                        gssdp_resource_group_set_available (group, match);
+                } else
+                        g_assert_not_reached ();
 
                 obj = obj->next;
         }
@@ -492,6 +509,7 @@ gupnp_context_manager_class_init (GUPnPContextManagerClass *klass)
  * Same as gupnp_context_manager_create().
  *
  * Returns: (transfer full): A new #GUPnPContextManager object.
+ * Since: 0.13.0
  * Deprecated: 0.17.2: Use gupnp_context_manager_create().
  **/
 GUPnPContextManager *
@@ -520,6 +538,8 @@ gupnp_context_manager_new (GMainContext *main_context,
  * the implementation falls back to the basic Unix context manager instead.
  *
  * Returns: (transfer full): A new #GUPnPContextManager object.
+ *
+ * Since: 0.17.2
  **/
 GUPnPContextManager *
 gupnp_context_manager_create (guint port)
@@ -529,22 +549,19 @@ gupnp_context_manager_create (guint port)
 #endif
         GUPnPContextManager *impl;
         GType impl_type = G_TYPE_INVALID;
-#ifdef G_OS_WIN32
-#include "gupnp-windows-context-manager.h"
 
+#ifdef G_OS_WIN32
         impl_type = GUPNP_TYPE_WINDOWS_CONTEXT_MANAGER;
 #else
-#ifdef USE_NETWORK_MANAGER
-#include "gupnp-network-manager.h"
+#if defined(USE_NETWORK_MANAGER)
         system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
 
-        if (gupnp_network_manager_is_available ())
+        if (system_bus != NULL && gupnp_network_manager_is_available ())
                 impl_type = GUPNP_TYPE_NETWORK_MANAGER;
-#elif USE_CONNMAN
-#include "gupnp-connman-manager.h"
+#elif defined(USE_CONNMAN)
         system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
 
-       if (gupnp_connman_manager_is_available ())
+       if (system_bus != NULL && gupnp_connman_manager_is_available ())
                 impl_type = GUPNP_TYPE_CONNMAN_MANAGER;
 #endif
 
@@ -553,21 +570,28 @@ gupnp_context_manager_create (guint port)
              * are using one of the DBus managers but it's not available, so we
              * fall-back to it. */
 #if defined (USE_NETLINK) || defined (HAVE_LINUX_RTNETLINK_H)
+#if defined (HAVE_IFADDRS_H)
                 if (gupnp_linux_context_manager_is_available ())
                         impl_type = GUPNP_TYPE_LINUX_CONTEXT_MANAGER;
                 else
                     impl_type = GUPNP_TYPE_UNIX_CONTEXT_MANAGER;
 #else
+		impl_type = GUPNP_TYPE_LINUX_CONTEXT_MANAGER;
+
+#endif
+#elif defined (HAVE_IFADDRS_H)
                 impl_type = GUPNP_TYPE_UNIX_CONTEXT_MANAGER;
+#else
+#error No context manager defined
 #endif
         }
 #endif /* G_OS_WIN32 */
-        impl = g_object_new (impl_type,
-                             "port", port,
-                             NULL);
+        impl = GUPNP_CONTEXT_MANAGER (g_object_new (impl_type,
+                                                    "port", port,
+                                                    NULL));
 
 #if defined(USE_NETWORK_MANAGER) || defined(USE_CONNMAN)
-        g_object_unref (system_bus);
+        g_clear_object (&system_bus);
 #endif
         return impl;
 }
@@ -580,6 +604,8 @@ gupnp_context_manager_create (guint port)
  * Only the active control points send discovery messages.
  * This function should be called when servers are suspected to have
  * disappeared.
+ *
+ * Since: 0.20.3
  **/
 void
 gupnp_context_manager_rescan_control_points (GUPnPContextManager *manager)
@@ -611,6 +637,8 @@ gupnp_context_manager_rescan_control_points (GUPnPContextManager *manager)
  * You usually want to call this function from
  * #GUPnPContextManager::context-available handler after you create a
  * #GUPnPControlPoint object for the newly available context.
+ *
+ * Since: 0.13.0
  **/
 void
 gupnp_context_manager_manage_control_point (GUPnPContextManager *manager,
@@ -633,6 +661,8 @@ gupnp_context_manager_manage_control_point (GUPnPContextManager *manager,
  * usually want to call this function from
  * #GUPnPContextManager::context-available handler after you create a
  * #GUPnPRootDevice object for the newly available context.
+ *
+ * Since: 0.13.0
  **/
 void
 gupnp_context_manager_manage_root_device (GUPnPContextManager *manager,
@@ -651,6 +681,8 @@ gupnp_context_manager_manage_root_device (GUPnPContextManager *manager,
  *
  * Get the network port associated with this context manager.
  * Returns: The network port asssociated with this context manager.
+ *
+ * Since: 0.19.1
  */
 guint
 gupnp_context_manager_get_port (GUPnPContextManager *manager)

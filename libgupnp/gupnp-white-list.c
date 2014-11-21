@@ -27,6 +27,8 @@
  * of entries that will be used to filter networks.
  * The #GUPnPWhiteList could be enabled or not. If it's enabled but the entries
  * list is empty, it behaves as disabled.
+ *
+ * Since: 0.20.5
  */
 
 #include <string.h>
@@ -143,6 +145,8 @@ gupnp_white_list_class_init (GUPnPWhiteListClass *klass)
          * GUPnPWhiteList:enabled:
          *
          * Whether this white list is active or not.
+         *
+         * Since: 0.20.5
          **/
         g_object_class_install_property
                 (object_class,
@@ -157,11 +161,11 @@ gupnp_white_list_class_init (GUPnPWhiteListClass *klass)
                           G_PARAM_STATIC_STRINGS));
 
         /**
-         * GUPnPWhiteList:entries:
+         * GUPnPWhiteList:entries: (type GList(utf8))
          *
          * Whether this white list is active or not.
-         * Type: GList
-         * Transfer: none
+         *
+         * Since: 0.20.5
          **/
         g_object_class_install_property
                 (object_class,
@@ -182,6 +186,8 @@ gupnp_white_list_class_init (GUPnPWhiteListClass *klass)
  * The white list is disabled by default.
  *
  * Returns: (transfer full): A new #GUPnPWhiteList object.
+ *
+ * Since: 0.20.5
  **/
 GUPnPWhiteList *
 gupnp_white_list_new (void)
@@ -195,7 +201,9 @@ gupnp_white_list_new (void)
  * @enable:  %TRUE to enable @white_list, %FALSE otherwise
  *
  * Enable or disable the #GUPnPWhiteList to perform the network filtering.
-**/
+ *
+ * Since: 0.20.5
+ **/
 void
 gupnp_white_list_set_enabled (GUPnPWhiteList *white_list, gboolean enable)
 {
@@ -212,6 +220,8 @@ gupnp_white_list_set_enabled (GUPnPWhiteList *white_list, gboolean enable)
  * Return the status of the #GUPnPWhiteList
  *
  * Return value: %TRUE if @white_list is enabled, %FALSE otherwise.
+ *
+ * Since: 0.20.5
  **/
 gboolean
 gupnp_white_list_get_enabled (GUPnPWhiteList *white_list)
@@ -228,6 +238,8 @@ gupnp_white_list_get_enabled (GUPnPWhiteList *white_list)
  * Return the state of the entries list of #GUPnPWhiteList
  *
  * Return value: %TRUE if @white_list is empty, %FALSE otherwise.
+ *
+ * Since: 0.20.5
  **/
 gboolean
 gupnp_white_list_is_empty (GUPnPWhiteList *white_list)
@@ -247,6 +259,8 @@ gupnp_white_list_is_empty (GUPnPWhiteList *white_list)
  * if @entry already exists, it won't be added a second time.
  *
  * Return value: %TRUE if @entry is added, %FALSE otherwise.
+ *
+ * Since: 0.20.5
  **/
 gboolean
 gupnp_white_list_add_entry (GUPnPWhiteList *white_list, gchar* entry)
@@ -272,6 +286,29 @@ gupnp_white_list_add_entry (GUPnPWhiteList *white_list, gchar* entry)
 }
 
 /**
+ * gupnp_white_list_add_entryv:
+ * @white_list: A #GUPnPWhiteList
+ * @entries: (array zero-terminated=1): A %NULL-terminated list of strings
+ *
+ * Add a list of entries to a #GUPnPWhiteList. This is a helper function to
+ * directly add a %NULL-terminated array of string usually aquired from
+ * commandline args.
+ *
+ * Since: 0.20.8
+ */
+void
+gupnp_white_list_add_entryv (GUPnPWhiteList *white_list, gchar **entries)
+{
+        gchar * const * iter = entries;
+
+        g_return_if_fail (GUPNP_IS_WHITE_LIST (white_list));
+        g_return_if_fail ((entries != NULL));
+
+        for (; *iter != NULL; iter++)
+                gupnp_white_list_add_entry (white_list, *iter);
+ }
+
+/**
  * gupnp_white_list_remove_entry:
  * @white_list: A #GUPnPWhiteList
  * @entry: A value to remove from the filter list.
@@ -280,6 +317,8 @@ gupnp_white_list_add_entry (GUPnPWhiteList *white_list, gchar* entry)
  * filter networks.
  *
  * Return value: %TRUE if @entry is removed, %FALSE otherwise.
+ *
+ * Since: 0.20.5
  **/
 gboolean
 gupnp_white_list_remove_entry (GUPnPWhiteList *white_list, gchar* entry)
@@ -297,7 +336,7 @@ gupnp_white_list_remove_entry (GUPnPWhiteList *white_list, gchar* entry)
 
         if (s_entry != NULL) {
                 priv->entries = g_list_remove_link (priv->entries, s_entry);
-		g_list_free_full (s_entry, g_free);
+                g_list_free_full (s_entry, g_free);
                 g_object_notify (G_OBJECT (white_list), "entries");
         }
 
@@ -313,6 +352,8 @@ gupnp_white_list_remove_entry (GUPnPWhiteList *white_list, gchar* entry)
  * Return value: (element-type utf8) (transfer none):  a #GList of entries
  * used to filter networks, interfaces,... or %NULL.
  * Do not modify or free the list nor its elements.
+ *
+ * Since: 0.20.5
  **/
 GList *
 gupnp_white_list_get_entries (GUPnPWhiteList *white_list)
@@ -329,7 +370,9 @@ gupnp_white_list_get_entries (GUPnPWhiteList *white_list)
  * Remove all entries from #GList that compose the white list.
  * The list is now empty. Even if #GUPnPWhiteList is enabled, it will have the
  * same behavior as if it was disabled.
-**/
+ *
+ * Since: 0.20.5
+ **/
 void
 gupnp_white_list_clear (GUPnPWhiteList *white_list)
 {
@@ -355,6 +398,8 @@ gupnp_white_list_clear (GUPnPWhiteList *white_list)
  *
  * Return value: %TRUE if @context is matching the @white_list criterias,
  * %FALSE otherwise.
+ *
+ * Since: 0.20.5
  **/
 gboolean
 gupnp_white_list_check_context (GUPnPWhiteList *white_list,

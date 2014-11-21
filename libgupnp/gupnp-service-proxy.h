@@ -130,13 +130,15 @@ gupnp_service_proxy_send_action_valist
                                     GError                        **error,
                                     va_list                         var_args);
 
+#ifndef GUPNP_DISABLE_DEPRECATED
 gboolean
 gupnp_service_proxy_send_action_hash
                                    (GUPnPServiceProxy              *proxy,
                                     const char                     *action,
                                     GError                        **error,
                                     GHashTable                     *in_hash,
-                                    GHashTable                     *out_hash);
+                                    GHashTable                     *out_hash) G_GNUC_DEPRECATED;
+#endif
 
 
 gboolean
@@ -174,13 +176,15 @@ gupnp_service_proxy_begin_action_list
                                     GUPnPServiceProxyActionCallback callback,
                                     gpointer                        user_data);
 
+#ifndef GUPNP_DISABLE_DEPRECATED
 GUPnPServiceProxyAction *
 gupnp_service_proxy_begin_action_hash
                                    (GUPnPServiceProxy              *proxy,
                                     const char                     *action,
                                     GUPnPServiceProxyActionCallback callback,
                                     gpointer                        user_data,
-                                    GHashTable                     *hash);
+                                    GHashTable                     *hash) G_GNUC_DEPRECATED;
+#endif
 
 gboolean
 gupnp_service_proxy_end_action     (GUPnPServiceProxy              *proxy,
@@ -223,8 +227,28 @@ gupnp_service_proxy_add_notify     (GUPnPServiceProxy              *proxy,
                                     gpointer                        user_data);
 
 gboolean
+gupnp_service_proxy_add_notify_full (GUPnPServiceProxy              *proxy,
+                                     const char                     *variable,
+                                     GType                           type,
+                                     GUPnPServiceProxyNotifyCallback callback,
+                                     gpointer                        user_data,
+                                     GDestroyNotify                  notify);
+
+gboolean
+gupnp_service_proxy_add_raw_notify (GUPnPServiceProxy              *proxy,
+                                    GUPnPServiceProxyNotifyCallback callback,
+                                    gpointer                        user_data,
+                                    GDestroyNotify                  notify);
+
+gboolean
 gupnp_service_proxy_remove_notify  (GUPnPServiceProxy              *proxy,
                                     const char                     *variable,
+                                    GUPnPServiceProxyNotifyCallback callback,
+                                    gpointer                        user_data);
+
+gboolean
+gupnp_service_proxy_remove_raw_notify
+                                   (GUPnPServiceProxy              *proxy,
                                     GUPnPServiceProxyNotifyCallback callback,
                                     gpointer                        user_data);
 
